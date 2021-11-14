@@ -22,7 +22,7 @@ users=[
 
 
 # databaseURL = ''
-databaseURL = ''
+databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
 appSecretKey = 'AlnConveyor$2021'
 sessionTimeInMinutes = 600
 
@@ -65,7 +65,7 @@ moralisNetMap = {
     'bsc_test' : "testnet",
     'polygon_main':"polygon",
     'avax_main':'avalanche',
-    'ftm_main':'fantom',
+    # 'ftm_main':'fantom',
 }
 
 Blocktime={

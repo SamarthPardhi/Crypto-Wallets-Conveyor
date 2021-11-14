@@ -11,7 +11,8 @@ def userHash(hash):
 
 def validateEVMAddress(addr:str):
     s='1234567890abcdef'
-    if len(addr) == 42 and addr[0:2:].lower()=='0x':
+    addr = addr.lower()
+    if len(addr) == 42 and addr[0:2:]=='0x':
         for i in addr[2:]:
             if not i in s :
                 return False

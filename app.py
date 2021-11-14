@@ -599,8 +599,8 @@ def add():
         else:
             return render_template('add.html', title=title, error='',addrAbsent=addrAbsent)
 
-@app.route('/stats/<str:user>', )
-def add():
+@app.route('/stats/<string:user>', methods=['POST', 'GET'])
+def stats(user):
     return render_template('stats.html')
 
 @app.context_processor
