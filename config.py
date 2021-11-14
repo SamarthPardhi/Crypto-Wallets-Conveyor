@@ -25,10 +25,22 @@ users=[
     },   
     {
         'type':'agg',
-        'name':'dsjdh',
+        'name':'test1',
         'id':'B01',
-        'hash':'00c7fffe403952167120afc0df7c164368fdfbb6f5ea0138bd96f6ff4bc5a8eb' #'tEst$A'
-    },         
+        'hash':'bf8716cba090b58480090cef5a92b209b862a8f770fed32a920650e9d42252fd' #'tEst$1'
+    },     
+    {
+        'type':'agg',
+        'name':'test2',
+        'id':'B02',
+        'hash':'a7df8e694f124e0dcb0c838b012d4361933681766f6260b0d4b50b6d5c36e176' #'tEst$2'
+    }, 
+    {
+        'type':'agg',
+        'name':'test3',
+        'id':'B03',
+        'hash':'6ab41142f35f0ed2929f9f374c57c7a6dba5d60c806c14d8719349e20418177f' #'tEst$3'
+    }
 ]
 
 

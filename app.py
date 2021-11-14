@@ -349,9 +349,11 @@ def login():
     if request.method == 'POST':
         passcode = request.form['passcode']
         pass256 = hashlib.sha256(passcode.strip().encode()).hexdigest().lower()
-        if userHash(pass256):
+        userDic = userHash(pass256)
+        if userDic:
             session.permanent = True
             session['id'] = pass256
+            print("New login:", userDic)
             return redirect('../')
         else:
             error = 'Wrong Passcode!'
