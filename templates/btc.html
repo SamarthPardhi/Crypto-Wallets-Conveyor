@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+
+<div class="">
+    <h1>{{ title[5:] }}</h1>
+    <div class="table">
+    <table>
+        <tr>
+            <th>In-time</th>
+            <th>seed</th>
+            <th>Address</th>
+            <th>tx</th>
+            <th>remark</th>
+            <th>worth</th>
+        </tr>
+        {% for log in data%}
+            <tr>
+                <td>{{ format_date(log.date_created) }}</td>
+                <td>{{ log.seed }}</td>
+                <td>{{ log.address }}</td>
+                <td>{{ log.tx }}</td>
+                <td style="color: {{ format_error_color(log.status) }} ">{{ log.status }}</td>
+                <td>{{ log.worth }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+
+{% endblock %}

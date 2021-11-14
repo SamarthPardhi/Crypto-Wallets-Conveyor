@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+
+<div class="">
+    <h1>{{ title[5:].split('_')[0] }}</h1>
+
+    <div class="table">
+    <table>
+        <tr class="tr">
+            <th>In-time</th>
+            <th>network</th>
+            <th>type</th>
+            <th>Transaction</th>
+            <th>Address</th>
+            <th>remark</th>
+            <th>contract name</th>
+            <th>worth(in USD for contract)</th>
+        </tr>
+        {% for log in data %}
+        <tr>
+            {% if addFilter in pubAddr(log.privKey) or addFilter in log.contAddress %}
+                <td>{{ format_date(log.date_created) }}</td>
+                <td>{{ log.network }}</td>
+                <td>{{ log.type }}</td>
+                <td><a href="{{ format_explorer_link(log.network) }}/tx/{{ log.tx }}" target="_blank">{{ log.tx[:20] }}...</a></td>
+                <td><a href="{{ format_explorer_link(log.network) }}/address/{{  pubAddr(log.privKey)  }}" target="_blank">{{  pubAddr(log.privKey)[:20]  }}...</a></td>
+                <td style="color: {{ format_error_color(log.status) }} ">{{ format_error_string(log.status) }}
+                    {% if log.status != 'success' %}
+                        <a href ="../../action/{{log.id}}" class="btn btn-secondary">withdraw</a>
+                    {% endif %}
+                </td>
+                <td><a href="{{ format_explorer_link(log.network) }}/token/{{ log.contAddress }}" target="_blank">{{ log.contName }}</a></td>
+                <td>{{ log.worth }}[{{ log.exchange }}]</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+
+{% endblock %}

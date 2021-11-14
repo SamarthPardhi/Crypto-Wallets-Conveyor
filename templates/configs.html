@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    
+    <div class="container">
+        <br>
+        <a href="../add" class="btn btn-secondary">Add New Address</a>
+        <br>
+        <br>
+
+        <table style="width: 70%;">
+            <tr class="tr">
+                <th>Last Updated</th>
+                <th>network</th>
+                <th>address</th>
+                <th>action</th>
+            </tr>
+            {% for n in data %}
+            <tr>
+                <td>{{ format_date(n.date_created )}}</td>
+                <td>{{ n.network }}</td>
+                <td><a href="{{ format_explorer_link(n.network) }}/address/{{  n.address  }}" target="_blank">{{ n.address }}</a></td>
+                <td> <a href ="/update/{{n.id}}"> Update </a> <a href ="/delete/{{n.id}}" class="btn btn-outline-danger btn-sm">Delete</a> </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <br>
+        <br>
+
+    </div>
+
+
+{% endblock %}

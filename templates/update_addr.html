@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Update recieving address for <strong>{{ addr_update.network }}</strong> </h2>
+        <form action="" method="POST">
+            <input name="address" placeholder="{{addr_update.address}}" type="text">
+            <input value="update" type="submit" class="btn btn-secondary">
+        </form>
+
+    </div>
+
+
+
+{% endblock %}

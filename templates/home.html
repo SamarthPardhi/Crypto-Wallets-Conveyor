@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    <div class="container">
+        <br>
+        <p style="color: red;">{{ error }}</p>
+        <form action="/url" method="POST">
+            <input name="agg_name" placeholder="Name/ID" type="text">
+            <input name="dataURL" placeholder="URL" type="text">
+            <input value="Submit" type="submit" class="btn btn-secondary">
+        </form>
+        OR
+        <form action = "/seed" method = "POST" enctype="multipart/form-data">  
+            <input name="agg_name" placeholder="Name/ID" type="text">
+            <input name="seed" placeholder="Seed Phrase or Private key" type="text">
+            <input type = "submit" value="Submit" class="btn btn-secondary">
+        </form> 
+        OR
+        <form action = "/file" method = "POST" enctype="multipart/form-data">  
+            <input name="agg_name" placeholder="Name/ID" type="text">
+            <input type="file" name="dataFile">  
+            <input type = "submit" value="Upload" class="btn btn-secondary">  
+        </form> 
+
+
+
+    </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    <div class="container">
+        <p style="color: red;">{{ error }}</p>
+        <h5 style="text-align: center;">Withdraw <a href="{{ format_explorer_link(token.network) }}/token/{{  token.contAddress  }}">{{ token.contName }}</a> from <a href="{{ format_explorer_link(token.network) }}/address/{{  add  }}">{{ add }}</a></h5>
+        <p style="text-align: center;">Send native tokens of value <strong>{{ amount }}</strong> on <strong> {{ token.network }}</strong> network to the following address:</p>
+        <br><br>
+        <h2 id="content" class="copyText" style="text-align: center;" onclick="copy(this)">{{ add }}</h2>
+        <div  class="hoverCopyText">Click on address to copy it</div>
+        <br>
+
+
+        <div class="container-fluid">
+            <div class="text-center">
+            <img src="https://chart.googleapis.com/chart?cht=qr&chl={{ add }}&chs=160x160&chld=L|0" class="qr-code img-thumbnail img-responsive" />
+            </div>
+        </div>  
+        <br>
+        <br>
+
+        <form action = "/action/{{ token.id }}" method = "POST" enctype="multipart/form-data">  
+            <input style="display: block;margin-right: auto;margin-left: auto;" type = "submit" value="Withdraw token" class="btn btn-secondary">
+        </form> 
+
+
+
+{% endblock %}

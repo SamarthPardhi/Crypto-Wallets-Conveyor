@@ -1,0 +1,53 @@
+table, th, td {
+    border: 1px solid #bbb;
+    border-collapse: collapse;
+}
+
+table{
+  color: #ddd;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ddd;
+}
+
+.navbar-light .navbar-nav .active>.nav-link{
+  color: #eee;
+  font-weight: bolder;
+}
+
+body{
+  color: #ddd;
+  background-color: #333;
+
+}
+
+.tr{
+  width: 100%;
+}
+
+.table {
+  overflow-x: scroll;
+  width: 95%;
+  margin: 20px;
+}
+
+h1{
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.hoverCopyText {
+  background-color: #333;
+  padding: 0px;
+  text-align: center;
+}
+  
+.copyText:hover + div {
+  display: block;
+}
+
+.qr-code {
+	max-width: 200px;
+	margin: 10px;
+	}
