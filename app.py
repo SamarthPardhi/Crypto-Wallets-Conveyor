@@ -1,4 +1,3 @@
-from requests.sessions import Request
 from web3 import Web3
 from eth_account import Account
 from flask import Flask, request, redirect, render_template, session, flash
