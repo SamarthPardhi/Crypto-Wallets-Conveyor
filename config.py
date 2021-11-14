@@ -59,7 +59,7 @@ RPC_links={
 }
 
 explorerDic = {
-    'BTC':'https://blockchair.com/bitcoin/',
+    'BTC':'https://blockchair.com/bitcoin',
     'eth_main':'https://etherscan.io',
     'rinkeby':'https://rinkeby.etherscan.io',
     'bsc_main':'https://bscscan.com',
@@ -68,7 +68,7 @@ explorerDic = {
     'hoo_main':'https://hooscan.com',
     'heco_main':'https://hecoinfo.com',
     'ftm_main':'https://ftmscan.com',
-    'avax_main':'https://snowtrace.io/'
+    'avax_main':'https://snowtrace.io'
 }
 
 moralisNetMap = {

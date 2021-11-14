@@ -11,7 +11,6 @@ from bip_utils import Bip39MnemonicValidator
 from datetime import datetime, timedelta
 import hashlib
 import json
-import sys
 import time
 import threading
 import sys
