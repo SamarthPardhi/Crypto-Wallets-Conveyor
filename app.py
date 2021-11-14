@@ -620,7 +620,8 @@ def add():
                     exc = 'Invalid Address'
                     error = f"while adding {address} for {network}. The following error occured: {exc}"
                     return render_template('add.html', title = title, error=error,addrAbsent=addrAbsent)
-            address = Web3.toChecksumAddress(address)
+                else:
+                    address = Web3.toChecksumAddress(address)
             rowIn = recAddresses(address=address,network=network)
             try:
                 db.session.add(rowIn)
