@@ -1,3 +1,14 @@
+
+# databaseURL = 'sqlite:///local.db'
+databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
+appSecretKey = 'AlnConveyor$2021'
+sessionTimeInMinutes = 600
+
+#Moralis API key
+moralisHeaders  = {
+  'x-api-key': 'hDwiCzFEpHeNuHtHFReUBpdnat5IpX9fZBIvrVL3HX41muzsNsfXsKL8bB90TV8e'
+}
+
 #User's data with sha256 hashes of passcodes
 users=[
     {
@@ -20,16 +31,6 @@ users=[
     },         
 ]
 
-
-databaseURL = 'sqlite:///local.db'
-# databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
-appSecretKey = 'AlnConveyor$2021'
-sessionTimeInMinutes = 600
-
-#Moralis API key
-moralisHeaders  = {
-  'x-api-key': 'hDwiCzFEpHeNuHtHFReUBpdnat5IpX9fZBIvrVL3HX41muzsNsfXsKL8bB90TV8e'
-}
 
 EVMNetsOnMission = ['eth_main', 'rinkeby', 'bsc_main', 'bsc_test','polygon_main','avax_main','heco_main','hoo_main','ftm_main'] #all EVM nets allowed
 
