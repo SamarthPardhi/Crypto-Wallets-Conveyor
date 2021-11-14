@@ -1,6 +1,7 @@
+from requests.sessions import Request
 from web3 import Web3
 from eth_account import Account
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session, flash
 from termcolor import colored
 from hdwallet import HDWallet
 from typing import Optional
@@ -335,7 +336,8 @@ class recAddresses(db.Model):
 
 @app.route('/')
 def home():
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
     else:
         error = ''
@@ -360,7 +362,8 @@ def login():
 
 @app.route('/<string:type>', methods=['GET', 'POST'])
 def devoid(type):
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
     else:
         if request.method == 'POST': 
@@ -456,23 +459,37 @@ def devoid(type):
 
             return redirect('/logs')
         else:
-            error = ''
-            title = 'logs'
-            return render_template('logs.html', title = title, error=error )
+            return redirect('/logs')
 
-@app.route('/logs')
+@app.route('/logs',methods=['POST', 'GET'])
 def logs():
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
-    else:    
+    else:            
         title = 'logs'
-        error=''
-        inData = inputData.query.order_by(inputData.id.desc())
-        return render_template('logs.html', title = title, error=error, data= inData)
+        error = ''
+        agg_name = ''
+        if request.method == 'POST': 
+            agg_name = request.form['agg_name'].strip()
+            if userDic['id'] == agg_name or userDic['name'] == agg_name or userDic['type']=='admin':
+                inData = inputData.query.order_by(inputData.id.desc())
+                agg_name = userDic['name']
+            else:
+                error = 'Incorrect ID!'
+                inData = ''
+        else:
+            agg_name = ''
+            if userDic['type'] == 'admin':
+                inData = inputData.query.order_by(inputData.id.desc())
+            else:
+                inData = ''
+        return render_template('logs.html', title = title, error=error, data= inData, agg_name=agg_name)
 
 @app.route('/view/<string:net>', methods=['GET', 'POST'])
 def view(net):
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
     else:    
         addFilter = request.args.get('address')        
@@ -495,7 +512,8 @@ def view(net):
 
 @app.route('/action/<string:id>', methods=['POST', 'GET'])
 def withdraw(id):
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
     else:
         token = allLogsEVMs.query.get_or_404(id)
@@ -526,19 +544,26 @@ def withdraw(id):
         else:
             return render_template('action.html', title='withdraw', error='', amount=amount, token=token, add=add)
 
-
 @app.route('/configs')
 def configs():
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login')        
     else:
         recAddr = recAddresses.query.order_by(recAddresses.id)
         return render_template('configs.html', title='configs', data=recAddr, error='')
 
 @app.route('/update/<int:id>',methods=['POST', 'GET'])
 def update(id):
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login') 
     else:
         addr_update = recAddresses.query.get_or_404(id)
         if request.method == 'POST':
@@ -554,8 +579,12 @@ def update(id):
 
 @app.route('/delete/<int:id>', methods=['POST', 'GET'])
 def delete(id):
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login')         
     else:
         addr_delete = recAddresses.query.get_or_404(id)
         try:
@@ -567,8 +596,12 @@ def delete(id):
 
 @app.route('/add',methods=['POST', 'GET'])
 def add():
-    if not getUser():
+    userDic = getUser()
+    if not userDic:
         return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login') 
     else:
         title = 'Update Configs'
         recAddr = recAddresses.query.order_by(recAddresses.id)
@@ -598,10 +631,6 @@ def add():
                 
         else:
             return render_template('add.html', title=title, error='',addrAbsent=addrAbsent)
-
-@app.route('/stats/<string:user>', methods=['POST', 'GET'])
-def stats(user):
-    return render_template('stats.html')
 
 @app.context_processor
 def utility_processor():

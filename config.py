@@ -14,15 +14,15 @@ users=[
     },   
     {
         'type':'agg',
-        'name':'test_agg',
+        'name':'dsjdh',
         'id':'B01',
         'hash':'00c7fffe403952167120afc0df7c164368fdfbb6f5ea0138bd96f6ff4bc5a8eb' #'tEst$A'
     },         
 ]
 
 
-# databaseURL = ''
-databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
+databaseURL = 'sqlite:///local.db'
+# databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
 appSecretKey = 'AlnConveyor$2021'
 sessionTimeInMinutes = 600
 

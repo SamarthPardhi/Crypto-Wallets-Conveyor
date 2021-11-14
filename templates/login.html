@@ -2,6 +2,9 @@
       
 {% block title %} {{ title }} {% endblock %}
 {% block content %}
+    {% for mesg in get_flashed_messages() %}
+        <h3 style="color: red; text-align: center;">{{ mesg }}</h3>
+    {% endfor %}
     <div class="container">
         <br>
         <p style="color: red;">{{ error }}</p>

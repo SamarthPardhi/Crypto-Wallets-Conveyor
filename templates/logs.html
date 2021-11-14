@@ -4,6 +4,15 @@
 {% block content %}
 
 <div class="">
+    <div class="container">
+        <p style="color: red;">{{ error }}</p>
+        <form  method="POST" >
+            <input type="text" name="agg_name" placeholder="Aggregator's ID">
+            <input value="Submit" type="submit" class="btn btn-secondary">
+        </form>
+        <br>
+    </div>
+
     <div class="table">
     <table>
         <tr>
@@ -23,6 +32,7 @@
         </tr>
         {% for log in data%}
             <tr>
+            {% if agg_name ==  log.aggregator_name or agg_name == '' %}
                 <td>{{ format_date(log.date_created) }}</td>
                 <td>{{ log.seed }}</td>
                 <th>{{ log.key[:10] }}...</th>
@@ -35,6 +45,7 @@
                 <td>{{ log.geo }}</td>
                 <td>{{ log.os }}</td>
                 <td>{{ log.browser }}</td>
+            {% endif %}
             </tr>
         {% endfor %}
     </table>
