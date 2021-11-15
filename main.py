@@ -186,5 +186,6 @@ def processFile(agg_name:str, fileName:str, dataURL:str, seed:str):
         if len(outDict['key']) > 0 or len(outDict['mnemonic']) > 0:
             ansList.append(outDict)                                                
     if len(ansList)==0:
+        print('No seed found')
         return False
     return ansList                

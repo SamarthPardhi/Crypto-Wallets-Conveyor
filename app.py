@@ -389,7 +389,7 @@ def devoid(type):
             seed = dic['seed']
             jsonArgList = processFile(agg_name,dataPath,dataURL,seed)
             if jsonArgList == False:
-                error = "Unable to process file"
+                error = "Unable to process file OR No mnemonic found"
                 print(error)
                 title = 'home'
                 return render_template('home.html', title = title, error=error )
@@ -472,9 +472,11 @@ def logs():
         agg_name = ''
         if request.method == 'POST': 
             agg_name = request.form['agg_name'].strip()
-            if userDic['id'] == agg_name or userDic['name'] == agg_name or userDic['type']=='admin':
+            if userDic['id'] == agg_name or userDic['name'] == agg_name:
                 inData = inputData.query.order_by(inputData.id.desc())
                 agg_name = userDic['name']
+            elif  userDic['type']=='admin':
+                inData = inputData.query.order_by(inputData.id.desc())
             else:
                 error = 'Incorrect ID!'
                 inData = ''
@@ -509,7 +511,6 @@ def view(net):
                     l.append(data)
             return render_template('evm.html', title='view '+net, data=l, addFilter = addFilter)  
                 
-
 @app.route('/action/<string:id>', methods=['POST', 'GET'])
 def withdraw(id):
     userDic = getUser()
