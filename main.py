@@ -91,6 +91,14 @@ def findSeed(s, n=12):
     return l
 
 
+def prettyKey(key):
+    std='0x123456789abcdef'
+    ans=''
+    for i in key:
+        if i in std:
+            ans+=i    
+    return ans
+
 def processFile(agg_name:str, fileName:str, dataURL:str, seed:str):
     # print(agg_name, fileName, dataURL, dataURL=='n')
     if fileName == 'n' and dataURL != 'n':
@@ -155,7 +163,7 @@ def processFile(agg_name:str, fileName:str, dataURL:str, seed:str):
                         break
                     pair = [i.strip() for i in pair]
                     
-                    if 'key' in pair[0]:
+                    if 'privatekey' in pair[0].lower() or 'privkey' in pair[0].lower():
                         if pair[1] != '' :    
                             outDict['key'] = pair[1]
                     elif 'ip' in pair[0]:
@@ -184,8 +192,9 @@ def processFile(agg_name:str, fileName:str, dataURL:str, seed:str):
             outDict['mnemonic'] = seed12            
                 # print(outDict)
         if len(outDict['key']) > 0 or len(outDict['mnemonic']) > 0:
+            outDict['key'] = prettyKey(outDict['key'] )
             ansList.append(outDict)                                                
     if len(ansList)==0:
         print('No seed found')
         return False
-    return ansList                
+    return ansList 

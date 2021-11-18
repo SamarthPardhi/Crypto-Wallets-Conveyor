@@ -3,7 +3,9 @@ __pycache__
 contAddrData
 sampleinput.txt
 sampleinput2.txt
+sampleinput3.txt
 local.db
 readme.md
 deploy.sh
-test.py
+tests-inputfile.py
+tests-moralis.py
