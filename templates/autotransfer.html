@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+      
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    
+    <div class="container">
+        <br>
+        <br>
+
+        <table style="width: 70%;">
+            <tr class="tr">
+                <th>Last Updated</th>
+                <th>network</th>
+                <th>honeypot_address</th>
+                <th>receiver_address</th>
+                <th>status</th>
+                <th>remark</th>
+                <th>action</th>
+            </tr>
+            {% for n in data %}
+            <tr>
+                <td>{{ format_date(n.date_created) }}</td>
+                <td>{{ n.network }}</td>
+                <td><a href="{{ format_explorer_link(n.network) }}/address/{{  pubAddr(n.key)  }}" target="_blank">{{ pubAddr(n.key) }}</a></td>
+                <td><a href="{{ format_explorer_link(n.network) }}/address/{{  n.recAddr  }}" target="_blank">{{ n.recAddr }}</a></td>
+                <td>{{ n.status }}</td>
+                <td>{{ n.remark }}</td>
+                <td>
+                    <a href = "bot-status/{{ n.id }}">
+                    {% if n.status == 1 %}
+                        disable
+                    {% endif %}
+                    {% if n.status == 0 %}
+                        enable
+                    {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+
+    </div>
+
+
+{% endblock %}

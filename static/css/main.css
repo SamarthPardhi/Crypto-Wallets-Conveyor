@@ -16,6 +16,11 @@ table{
   font-weight: bolder;
 }
 
+.inpage_nav a{
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
 body{
   color: #ddd;
   background-color: #333;

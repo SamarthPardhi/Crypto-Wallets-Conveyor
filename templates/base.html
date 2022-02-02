@@ -23,6 +23,9 @@
               <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('autotransfer') }}">Auto-transfer</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url_for('configs') }}">Configs</a>
             </li>   
             <li class="nav-item">
@@ -34,7 +37,7 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('view', net='evm') }}">All EVMs</a>
             </li>         
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="{{ url_for('view', net='eth_main') }}">ETH</a>
             </li>            
             <li class="nav-item">
@@ -54,8 +57,10 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('view', net='hoo_main') }}">Hoo</a>
-            </li>
+            </li> -->
           </ul>
+          <button style="margin-right: 5px;" type="button" class="btn btn-danger" onclick="window.location.href='/logout'">logout</button>
+
           <form class="form-inline my-2 my-lg-0" method="GET" >
             <input class="form-control mr-sm-2" type="address" name="address" placeholder="filter by address">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
