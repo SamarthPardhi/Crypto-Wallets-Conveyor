@@ -7,7 +7,7 @@ from typing import Optional
 from hdwallet.symbols import *
 from bit import Key, PrivateKeyTestnet, network
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+# from flask_migrate import Migrate
 from bip_utils import Bip39MnemonicValidator
 from datetime import datetime, timedelta
 import hashlib
@@ -278,7 +278,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=sessionTimeInMinut
 
 db = SQLAlchemy(app)
 
-migrate = Migrate(app, db)
+# migrate = Migrate(app, db)
 
 
 class inputData(db.Model):
