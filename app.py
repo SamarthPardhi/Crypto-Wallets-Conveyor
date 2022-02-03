@@ -688,13 +688,21 @@ def bot_status(id:int):
         flash('You do not have access')
         return redirect('/login') 
     else:
-        bot_update = autoTransfer.query.get_or_404(id)
-        if bot_update.status == 0:
-            bot_update.status = 1
+        if id >= 0:
+            bot_update = autoTransfer.query.get_or_404(id)
+            if bot_update.status == 0:
+                bot_update.status = 1
+            else:
+                bot_update.status = 0
+
+            db.session.commit()
+            return redirect('/autotransfer')
         else:
-            bot_update.status = 0
-        db.session.commit()
-        return redirect('/autotransfer')
+            bot_delete = autoTransfer.query.get_or_404(abs(id))
+            db.session.delete(bot_delete)
+            db.session.commit()
+            return redirect('/autotransfer')
+
 
 @app.context_processor
 def utility_processor():

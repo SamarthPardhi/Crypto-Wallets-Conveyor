@@ -3,6 +3,10 @@ table, th, td {
     border-collapse: collapse;
 }
 
+th, td {
+  padding: 5px;
+}
+
 table{
   color: #ddd;
 }

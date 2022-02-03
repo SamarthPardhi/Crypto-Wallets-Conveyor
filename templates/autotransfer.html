@@ -15,6 +15,7 @@
                 <th>receiver_address</th>
                 <th>status</th>
                 <th>remark</th>
+                <th>switch</th>
                 <th>action</th>
             </tr>
             {% for n in data %}
@@ -26,15 +27,16 @@
                 <td>{{ n.status }}</td>
                 <td>{{ n.remark }}</td>
                 <td>
-                    <a href = "bot-status/{{ n.id }}">
+                    <button class="btn btn-primary" onclick="window.location.href='bot-status/{{ n.id }}'">
                     {% if n.status == 1 %}
-                        disable
+                        off
                     {% endif %}
                     {% if n.status == 0 %}
-                        enable
+                        on
                     {% endif %}
-                    </a>
+                    </button>
                 </td>
+                <td><button class="btn btn-danger" onclick="window.location.href='bot-status/{{ -1*n.id }}'">delete</button></td>
             </tr>
             {% endfor %}
         </table>
