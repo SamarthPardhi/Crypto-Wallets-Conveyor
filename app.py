@@ -739,7 +739,7 @@ def scammed_addresses():
                     error = f"while adding {address} for {network}, the following error occured: {exc} "
         nets = [i for i in chainIdDict.keys()]
         indata = scammedContractAddresses.query.order_by(scammedContractAddresses.id)
-        return render_template('scammed-addresses.html', title='scammed addresses', data=indata, networks=nets, error = error)
+        return render_template('scammed-addresses.html', title='scammed token', data=indata, networks=nets, error = error)
 
 @app.route('/delete-scammed-address/<int:id>')
 def delete_id(id):
@@ -828,14 +828,15 @@ def utility_processor():
     return dict(format_explorer_link=format_explorer_link, pubAddr=pubAddr, format_error_color=format_error_color,format_error_string=format_error_string, format_date=format_date)
 
 if __name__ == "__main__":
-    # keys = ScammedAddresses.keys()
-    # for k in keys:
-    #     addrs = ScammedAddresses[k]
-    #     for ad in addrs:
-    #         rowIn = scammedContractAddresses(address=ad, network=k, name='', symbol='')
-    #         try:
-    #             db.session.add(rowIn)
-    #             db.session.commit()
-    #         except:
-    #             print(sys.exc_info()[1])
+    keys = ScammedAddresses.keys()
+    for k in keys:
+        addrs = ScammedAddresses[k]
+        for ad in addrs:
+            rowIn = scammedContractAddresses(address=ad, network=k, name='', symbol='')
+            try:
+                db.session.add(rowIn)
+                db.session.commit()
+            except:
+                print(sys.exc_info()[1])
+    print("done")
     app.run()
