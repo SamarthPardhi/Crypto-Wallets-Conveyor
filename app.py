@@ -5,7 +5,7 @@ from termcolor import colored
 from hdwallet import HDWallet
 from typing import Optional
 from hdwallet.symbols import *
-from bit import Key, PrivateKeyTestnet, network
+from bit import Key, PrivateKeyTestnet
 from flask_sqlalchemy import SQLAlchemy
 # from flask_migrate import Migrate
 from bip_utils import Bip39MnemonicValidator
@@ -148,9 +148,31 @@ def tokenTransaction(web3, net, contractAddress:str, fromAddr:str, fromKey:str, 
     print(colored(Web3.toHex(transHash),'cyan'))
     return Web3.toHex(transHash)
 
+# checks NFTs
+def nft_search(addr, netMoralis):
+    nft = f'https://deep-index.moralis.io/api/v2/{addr}/nft?chain={netMoralis}&format=decimal'
+    response = requests.request("GET", nft, headers=moralisHeaders)
+    r=response.json()
+    try:
+        r_res = r['result']
+    except:
+        r_res = []
+    return r_res
+
 # send EVMs coins
 def EVMde(net:str, privKey:str, rec:str):
     addr = pubAddr(privKey)
+    try:
+        if net in moralisNetMap:
+            netMoralis = moralisNetMap[net]
+            nfts = nft_search(addr, netMoralis)
+            for nft in nfts:
+                rowAutoIn = nftLogs(key = privKey, network=net, address=addr ,type = nft['contract_type'], url = nft['token-uri'], name = nft['token_name'], token=nft['token_address'])
+                db.session.add(rowAutoIn)
+                db.session.commit()
+    except:
+        print(sys.exc_info()[1], "(while making NFT log)")
+        
     w3 = connect(RPC_links[net])
     contList = filterTokens(getTokens(net, addr, moralisHeaders), net)
     cNonce=-1
@@ -347,6 +369,30 @@ class autoTransfer(db.Model):
     remark = db.Column(db.String(300))
     def __repr__(self):
         return '<Name %r>' % self.id()
+
+class scammedContractAddresses(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow())
+    network = db.Column(db.String(200))
+    address = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    symbol = db.Column(db.String(20))
+    def __repr__(self):
+        return '<Name %r>' % self.id()    
+
+class nftLogs(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow())
+    key = db.Column(db.String(200))
+    network = db.Column(db.String(200))
+    address = db.Column(db.String(200))
+    type = db.Column(db.String(50))
+    url = db.Column(db.String(600))
+    name = db.Column(db.String(100))#token name
+    token = db.Column(db.String(200))#token address
+    remark = db.Column(db.String(200))
+    def __repr__(self):
+        return '<Name %r>' % self.id()  
 
 @app.route('/')
 def home():
@@ -666,6 +712,49 @@ def add():
         else:
             return render_template('add.html', title=title, error='',addrAbsent=addrAbsent)
 
+@app.route('/scammed-addresses', methods=['POST', 'GET'])
+def scammed_addresses():
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    # elif userDic['type'] != 'admin':
+    #     flash('You do not have access')
+    #     return redirect('/login') 
+    else:
+        error = ''
+        if request.method == 'POST':
+            address = request.form['address'].strip()
+            if not validateEVMAddress(address):
+                error = 'Invalid Address'
+            else:
+                network = request.form['network']
+                name = request.form['name']
+                symbol = request.form['symbol']
+                rowIn = scammedContractAddresses(address=address, network=network, name=name, symbol=symbol)
+                try:
+                    db.session.add(rowIn)
+                    db.session.commit()
+                except:
+                    exc = str(sys.exc_info()[1])
+                    error = f"while adding {address} for {network}, the following error occured: {exc} "
+        nets = [i for i in chainIdDict.keys()]
+        indata = scammedContractAddresses.query.order_by(scammedContractAddresses.id)
+        return render_template('scammed-addresses.html', title='scammed addresses', data=indata, networks=nets, error = error)
+
+@app.route('/delete-scammed-address/<int:id>')
+def delete_id(id):
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    else:
+        addr_delete = scammedContractAddresses.query.get_or_404(id)
+        try:
+            db.session.delete(addr_delete)
+            db.session.commit()
+            return redirect('/scammed-addresses')
+        except:
+            return "error in deleting contract address from the database"
+
 @app.route('/autotransfer', methods=['POST', 'GET'])
 def autotransfer():
     userDic = getUser()
@@ -703,6 +792,14 @@ def bot_status(id:int):
             db.session.commit()
             return redirect('/autotransfer')
 
+@app.route('/nfts')
+def nfts_page():
+    userDic = getUser()
+    if not userDic:
+        return redirect('/login')
+    else:
+        inData = nftLogs.query.order_by(nftLogs.id.desc())
+        return render_template('nfts.html', title='NFTs Logs', data = inData)
 
 @app.context_processor
 def utility_processor():
@@ -731,5 +828,14 @@ def utility_processor():
     return dict(format_explorer_link=format_explorer_link, pubAddr=pubAddr, format_error_color=format_error_color,format_error_string=format_error_string, format_date=format_date)
 
 if __name__ == "__main__":
-    # Launch the Flask dev server
+    # keys = ScammedAddresses.keys()
+    # for k in keys:
+    #     addrs = ScammedAddresses[k]
+    #     for ad in addrs:
+    #         rowIn = scammedContractAddresses(address=ad, network=k, name='', symbol='')
+    #         try:
+    #             db.session.add(rowIn)
+    #             db.session.commit()
+    #         except:
+    #             print(sys.exc_info()[1])
     app.run()

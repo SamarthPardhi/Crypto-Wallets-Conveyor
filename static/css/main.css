@@ -11,6 +11,11 @@ table{
   color: #ddd;
 }
 
+hr{
+  background-color: #aaa;
+  margin-top: 50px;
+}
+
 .navbar-light .navbar-nav .nav-link {
   color: #ddd;
 }
@@ -59,4 +64,8 @@ h1{
 .qr-code {
 	max-width: 200px;
 	margin: 10px;
-	}
+}
+
+footer{
+  padding: 50px;
+}

@@ -11,3 +11,11 @@ inp.select();
 document.execCommand('copy',false);
 inp.remove();
 }
+
+document.body.style.zoom="90%"
+
+function copynew(that) {
+    var text = that;
+    console.log(text)
+    navigator.clipboard.writeText(text);
+}
