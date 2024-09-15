@@ -1,8 +1,8 @@
 
 # databaseURL = 'sqlite:///../db/local.db'
-# databaseURL = 'sqlite:///local.db'
-databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
-appSecretKey = 'AlnConveyor$2021'
+databaseURL = 'sqlite:///local.db'
+# databaseURL = 'postgresql://uplzxdtlsxqxxy:307e71b046c19dbaa0964c80135e721f68a77456b60c1aa2aae5c48aca0400ba@ec2-54-156-121-167.compute-1.amazonaws.com:5432/d7afgjt23qvdl3'
+appSecretKey = ''
 sessionTimeInMinutes = 600
 
 #Moralis API key
@@ -29,18 +29,6 @@ users=[
         'name':'test1',
         'id':'B01',
         'hash':'bf8716cba090b58480090cef5a92b209b862a8f770fed32a920650e9d42252fd' #'tEst$1'
-    },     
-    {
-        'type':'agg',
-        'name':'test2',
-        'id':'B02',
-        'hash':'a7df8e694f124e0dcb0c838b012d4361933681766f6260b0d4b50b6d5c36e176' #'tEst$2'
-    }, 
-    {
-        'type':'agg',
-        'name':'test3',
-        'id':'B03',
-        'hash':'6ab41142f35f0ed2929f9f374c57c7a6dba5d60c806c14d8719349e20418177f' #'tEst$3'
     }
 ]
 
