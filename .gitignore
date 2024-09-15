@@ -4,8 +4,8 @@ contAddrData
 sampleinput.txt
 sampleinput2.txt
 sampleinput3.txt
-local.db
-readme.md
 deploy.sh
 tests-inputfile.py
 tests-moralis.py
+main-4772
+chains.py
